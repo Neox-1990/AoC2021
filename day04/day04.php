@@ -44,6 +44,7 @@ for($i=5; $i<sizeof($bingonumbers); $i++){
 }
 $first = array_shift($winners);
 $last = array_pop($winners);
+
 echo "\nFirst BINGO: Board ".$first['key']." with a score of ".$first['score'];
 echo "\nLast BINGO: Board ".$last['key']." with a score of ".$last['score'];
 
