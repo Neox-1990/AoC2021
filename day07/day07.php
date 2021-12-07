@@ -6,24 +6,29 @@ $input = explode(",", trim($input));
 $example = file_get_contents('example.txt');
 $example = explode(",", trim($example));
 
+$random = [];
+for($i=0; $i<rand(500,1000); $i++){
+    $random[] = rand(1,2000);
+}
+
 $positions = $input;
 $positions_sorted = $input;
 sort($positions_sorted, SORT_NUMERIC);
 $size = sizeof($positions);
 
-$average = round(array_sum($positions)/$size);
+$average = array_sum($positions)/$size;
 $median = $positions_sorted[abs(sizeof($positions_sorted)/2)];
 $rms = round(sqrt(array_sum(array_map(function($val){return $val**2;},$positions))/$size));
 
 $min = $positions_sorted[0];
 $max = $positions_sorted[sizeof($positions_sorted)-1];
 
-$fcAverage = fuelConsumption($positions, $average);
+$fcAverage = min(fuelConsumption($positions, floor($average)),fuelConsumption($positions, ceil($average)));
 $fcMedian = fuelConsumption($positions, $median);
 $fcRms = fuelConsumption($positions, $rms);
 $fcBruteforce = bruteforce('fuelConsumption', $positions, $min, $max);
 
-$cfcAverage = crabFuelConsumption($positions, $average);
+$cfcAverage = min(crabFuelConsumption($positions, floor($average)),crabFuelConsumption($positions, ceil($average)));
 $cfcMedian = crabFuelConsumption($positions, $median);
 $cfcRms = crabFuelConsumption($positions, $rms);
 $cfcBruteforce = bruteforce('crabFuelConsumption', $positions, $min, $max);
@@ -67,3 +72,10 @@ function bruteForce(callable $consumption, array $positions, int $min, int $max)
     }
     return [$minFuel, $minPosition];
 }
+
+/**
+ * Seems like the best position for the normal fuelconsumption is the median of all positions
+ * And for the crab fuel consumption its seems like either floor() or ceil() of the average over all positions
+ * 
+ * Couldn't mathematical prove it tho :/
+*/
